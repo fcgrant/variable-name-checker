@@ -1,26 +1,39 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+function extractVariableList(symbols: vscode.DocumentSymbol[]): vscode.DocumentSymbol[] {
+	const variables = symbols.filter(symbol => symbol.kind === vscode.SymbolKind.Constant || symbol.kind === vscode.SymbolKind.Variable);
+						
+	return variables.concat(symbols.map(symbol => extractVariableList(symbol.children)).reduce((a, b) => a.concat(b), []));
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "variable-name-checker" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('variable-name-checker.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from variable-name-checker!');
+
+		const textEditor = vscode.window.activeTextEditor;
+
+		// Text editor can be undefined, so check
+		if (!textEditor) {
+			console.log("Cannot access text editor");
+			return;
+		}
+
+		// Get the data from inside the text file
+		const fileText = textEditor.document.getText();
+
+		const symbols = vscode.commands.executeCommand<vscode.DocumentSymbol[]>('vscode.executeDocumentSymbolProvider', textEditor.document.uri);
+
+		symbols.then(symbol => {
+			if (!(symbol === undefined)) {
+				for (const variable of extractVariableList(symbol)) {
+					vscode.window.showInformationMessage(variable.name);
+				}
+
+			}
+		});
 	});
 
 	context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
