@@ -8,29 +8,27 @@ function extractVariableList(symbols: vscode.DocumentSymbol[]): vscode.DocumentS
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let disposable = vscode.commands.registerCommand('variable-name-checker.helloWorld', () => {
+	let disposable = vscode.commands.registerCommand('variable-name-checker.run-variable-check', () => {
 
 		const textEditor = vscode.window.activeTextEditor;
+		let variables: string[] = [];
 
 		// Text editor can be undefined, so check
 		if (!textEditor) {
-			console.log("Cannot access text editor");
+			console.log("Failed to access text editor");
 			return;
 		}
 
-		// Get the data from inside the text file
-		const fileText = textEditor.document.getText();
-
-		const symbols = vscode.commands.executeCommand<vscode.DocumentSymbol[]>('vscode.executeDocumentSymbolProvider', textEditor.document.uri);
-
-		symbols.then(symbol => {
-			if (!(symbol === undefined)) {
-				for (const variable of extractVariableList(symbol)) {
-					vscode.window.showInformationMessage(variable.name);
+		// Create a list of all variables and constants defined in the text editor
+		vscode.commands.executeCommand<vscode.DocumentSymbol[]>
+			('vscode.executeDocumentSymbolProvider', textEditor.document.uri)
+			.then(symbol => {
+				if (!(symbol === undefined)) {
+					for (const variable of extractVariableList(symbol)) {
+						variables.push(variable.name);
+					}
 				}
-
-			}
-		});
+			});
 	});
 
 	context.subscriptions.push(disposable);

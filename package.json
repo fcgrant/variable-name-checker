@@ -9,14 +9,15 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "variable-name-checker.helloWorld",
-        "title": "Hello World"
+        "command": "variable-name-checker.run-variable-check",
+        "title": "Run Variable Check"
       }
+
     ]
   },
   "scripts": {
