@@ -8,7 +8,7 @@ function extractVariableList(symbols: vscode.DocumentSymbol[]): vscode.DocumentS
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let disposable = vscode.commands.registerCommand('variable-name-checker.run-variable-check', () => {
+	const runVariableCheck = vscode.commands.registerCommand('variable-name-checker.run-variable-check', () => {
 
 		const textEditor = vscode.window.activeTextEditor;
 		let variables: string[] = [];
@@ -29,9 +29,10 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 				}
 			});
+
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(runVariableCheck);
 }
 
 export function deactivate() {}

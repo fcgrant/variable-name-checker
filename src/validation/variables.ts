@@ -1,5 +1,5 @@
 
-export default function CheckVariablesAndConstants(names: string[]) {
+export default function validateVariables(names: string[]) {
 
     // Is the variable a single letter
 
