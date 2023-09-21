@@ -18,7 +18,18 @@
         "title": "Run Variable Check"
       }
 
-    ]
+    ],
+    "colors": [
+			{
+				"id": "extension.badVariables",
+				"description": "Background decoration color for bad variable names",
+				"defaults": {
+					"dark": "#FF000055",
+					"light": "#FF000055",
+					"highContrast": "#FF000055"
+				}
+			}
+		]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
